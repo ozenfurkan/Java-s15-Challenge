@@ -4,71 +4,57 @@ import java.time.LocalDate;
 
 public abstract class LibraryMaterials {
 
-    private String author;
-    private String title;
-    private double price;
-    private String status;
-    private String edition;
-    private String publicationDate;
-    private LocalDate dateOfPurchase;
+    private final Author author;
+    private final String title;
+    private final double price;
+    private final String status;
+    private final String edition;
+    private final String publicationDate;
+    private final LocalDate dateOfPurchase;
+    private final MemberRecord owner;
 
-    public void setAuthor(String author) {
+    public LibraryMaterials(Author author, String title, String status,
+                            double price, String edition,
+                            String publicationDate, LocalDate dateOfPurchase, MemberRecord owner) {
         this.author = author;
+        this.title = title;
+        this.status = status;
+        this.price = price;
+        this.edition = edition;
+        this.publicationDate = publicationDate;
+        this.dateOfPurchase = dateOfPurchase;
+        this.owner = owner;
     }
 
-    public String getAuthor() {
-        if (author == null) {
-            author = "Collective";
-        }
-        return author;
+
+
+    public MemberRecord getOwner() {
+        return owner;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public double getPrice() {
         return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getEdition() {
         return edition;
     }
 
-    public void setEdition(String edition) {
-        this.edition = edition;
-    }
 
     public String getPublicationDate() {
         return publicationDate;
     }
 
-    public void setPublicationDate(String publicationDate) {
-        this.publicationDate = publicationDate;
-    }
-
     public LocalDate getDateOfPurchase() {
         return dateOfPurchase;
-    }
-
-    public void setDateOfPurchase(LocalDate dateOfPurchase) {
-        this.dateOfPurchase = dateOfPurchase;
     }
 
     public abstract void displaySpecificInfo();

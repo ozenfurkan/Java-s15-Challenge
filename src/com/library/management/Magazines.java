@@ -1,16 +1,23 @@
+
 package com.library.management;
+
+import java.time.LocalDate;
 
 public class Magazines extends LibraryMaterials {
 
-    private int issueNumber;
+    private final int issueNumber;
+
+    public Magazines(Author author, String title, String status, double price,
+                     String edition, String publicationDate, LocalDate dateOfPurchase,
+                     MemberRecord owner, int issueNumber) {
+        super(author, title, status, price, edition, publicationDate, dateOfPurchase, owner);
+        this.issueNumber = issueNumber;
+    }
 
     public int getIssueNumber() {
         return issueNumber;
     }
 
-    public void setIssueNumber(int issueNumber) {
-        this.issueNumber = issueNumber;
-    }
 
     @Override
     public void displaySpecificInfo() {
