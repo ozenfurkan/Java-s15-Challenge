@@ -1,18 +1,14 @@
-package com.library.management;
+package com.library.management.model;
 
-import com.library.management.Books;
-import com.library.management.LibraryMaterials;
+import com.library.management.management.Author;
+import com.library.management.user.MemberRecord;
 
 import java.time.LocalDate;
 
-public  class StudyBooks extends LibraryMaterials {
+public class StudyBooks extends LibraryMaterials {
 
     private final String subject;
     private final String ISBN;
-
-    public String getISBN() {
-        return ISBN;
-    }
 
     public StudyBooks(Author author, String title, String status, double price, String edition,
                       String publicationDate, LocalDate dateOfPurchase, MemberRecord owner,
@@ -20,6 +16,10 @@ public  class StudyBooks extends LibraryMaterials {
         super(author, title, status, price, edition, publicationDate, dateOfPurchase, owner);
         this.subject = subject;
         this.ISBN = ISBN;
+    }
+
+    public String getISBN() {
+        return ISBN;
     }
 
     public String getSubject() {
@@ -36,8 +36,7 @@ public  class StudyBooks extends LibraryMaterials {
     public String toString() {
         return "StudyBooks{" +
                 "subject='" + subject + '\'' +
+                ", ISBN='" + ISBN + '\'' +
                 "} " + super.toString();
     }
-
-
 }

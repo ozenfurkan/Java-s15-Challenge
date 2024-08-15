@@ -1,4 +1,7 @@
-package com.library.management;
+package com.library.management.model;
+
+import com.library.management.management.Author;
+import com.library.management.user.MemberRecord;
 
 import java.time.LocalDate;
 
@@ -11,11 +14,12 @@ public abstract class LibraryMaterials {
     private final String edition;
     private final String publicationDate;
     private final LocalDate dateOfPurchase;
-    private final MemberRecord owner;
+    private MemberRecord owner;
+    private LocalDate borrowedDate;
 
     public LibraryMaterials(Author author, String title, String status,
-                            double price, String edition,
-                            String publicationDate, LocalDate dateOfPurchase, MemberRecord owner) {
+                            double price, String edition, String publicationDate,
+                            LocalDate dateOfPurchase, MemberRecord owner) {
         this.author = author;
         this.title = title;
         this.status = status;
@@ -26,10 +30,8 @@ public abstract class LibraryMaterials {
         this.owner = owner;
     }
 
-
-
-    public MemberRecord getOwner() {
-        return owner;
+    public Author getAuthor() {
+        return author;
     }
 
     public String getTitle() {
@@ -48,7 +50,6 @@ public abstract class LibraryMaterials {
         return edition;
     }
 
-
     public String getPublicationDate() {
         return publicationDate;
     }
@@ -57,18 +58,36 @@ public abstract class LibraryMaterials {
         return dateOfPurchase;
     }
 
+    public MemberRecord getOwner() {
+        return owner;
+    }
+
+    public void setOwner(MemberRecord owner) {
+        this.owner = owner;
+    }
+
+    public LocalDate getBorrowedDate() {
+        return borrowedDate;
+    }
+
+    public void setBorrowedDate(LocalDate borrowedDate) {
+        this.borrowedDate = borrowedDate;
+    }
+
     public abstract void displaySpecificInfo();
 
     @Override
     public String toString() {
         return "LibraryMaterials{" +
-                "author='" + author + '\'' +
+                "author='" + author.getAuthorName() + '\'' +
                 ", title='" + title + '\'' +
                 ", price=" + price +
                 ", status='" + status + '\'' +
                 ", edition='" + edition + '\'' +
                 ", publicationDate='" + publicationDate + '\'' +
                 ", dateOfPurchase=" + dateOfPurchase +
+                ", owner='" + (owner != null ? owner.getMemberName() : "None") + '\'' +
+                ", borrowedDate='" + (borrowedDate != null ? borrowedDate : "Not Borrowed") + '\'' +
                 '}';
     }
 }

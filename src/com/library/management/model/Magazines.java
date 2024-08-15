@@ -1,10 +1,11 @@
+package com.library.management.model;
 
-package com.library.management;
+import com.library.management.management.Author;
+import com.library.management.user.MemberRecord;
 
 import java.time.LocalDate;
 
 public class Magazines extends LibraryMaterials {
-
     private final int issueNumber;
 
     public Magazines(Author author, String title, String status, double price,
@@ -18,16 +19,8 @@ public class Magazines extends LibraryMaterials {
         return issueNumber;
     }
 
-
     @Override
     public void displaySpecificInfo() {
         System.out.println("Issue Number: " + issueNumber);
-    }
-
-    @Override
-    public String toString() {
-        return "Magazines{" +
-                "issueNumber=" + issueNumber +
-                "} " + super.toString();
     }
 }
