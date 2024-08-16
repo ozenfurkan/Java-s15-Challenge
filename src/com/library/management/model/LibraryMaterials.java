@@ -1,7 +1,6 @@
 package com.library.management.model;
 
-import com.library.management.management.Author;
-import com.library.management.user.MemberRecord;
+import com.library.management.management.MemberRecord;
 
 import java.time.LocalDate;
 
@@ -14,12 +13,12 @@ public abstract class LibraryMaterials {
     private final String edition;
     private final String publicationDate;
     private final LocalDate dateOfPurchase;
-    private MemberRecord owner;
+    private MemberRecord currentHolder;
     private LocalDate borrowedDate;
 
     public LibraryMaterials(Author author, String title, String status,
                             double price, String edition, String publicationDate,
-                            LocalDate dateOfPurchase, MemberRecord owner) {
+                            LocalDate dateOfPurchase, MemberRecord currentHolder) {
         this.author = author;
         this.title = title;
         this.status = status;
@@ -27,11 +26,11 @@ public abstract class LibraryMaterials {
         this.edition = edition;
         this.publicationDate = publicationDate;
         this.dateOfPurchase = dateOfPurchase;
-        this.owner = owner;
+        this.currentHolder = currentHolder;
     }
 
-    public Author getAuthor() {
-        return author;
+    public String getAuthor() {
+        return author.getAuthorName();
     }
 
     public String getTitle() {
@@ -58,12 +57,12 @@ public abstract class LibraryMaterials {
         return dateOfPurchase;
     }
 
-    public MemberRecord getOwner() {
-        return owner;
+    public MemberRecord getCurrentHolder() {
+        return currentHolder;
     }
 
-    public void setOwner(MemberRecord owner) {
-        this.owner = owner;
+    public void setCurrentHolder(MemberRecord currentHolder) {
+        this.currentHolder = currentHolder;
     }
 
     public LocalDate getBorrowedDate() {
@@ -86,7 +85,7 @@ public abstract class LibraryMaterials {
                 ", edition='" + edition + '\'' +
                 ", publicationDate='" + publicationDate + '\'' +
                 ", dateOfPurchase=" + dateOfPurchase +
-                ", owner='" + (owner != null ? owner.getMemberName() : "None") + '\'' +
+                ", owner='" + (currentHolder != null ? currentHolder.getMemberName() : "None") + '\'' +
                 ", borrowedDate='" + (borrowedDate != null ? borrowedDate : "Not Borrowed") + '\'' +
                 '}';
     }

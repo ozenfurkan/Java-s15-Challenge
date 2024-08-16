@@ -1,7 +1,6 @@
 package com.library.management.model;
 
-import com.library.management.management.Author;
-import com.library.management.user.MemberRecord;
+import com.library.management.management.MemberRecord;
 
 import java.time.LocalDate;
 
@@ -10,8 +9,8 @@ public class Journals extends LibraryMaterials {
 
     public Journals(Author author, String title, String status,
                     double price, String edition, String publicationDate,
-                    LocalDate dateOfPurchase, MemberRecord owner, String discipline) {
-        super(author, title, status, price, edition, publicationDate, dateOfPurchase, owner);
+                    LocalDate dateOfPurchase, MemberRecord currentHolder, String discipline) {
+        super(author, title, status, price, edition, publicationDate, dateOfPurchase, currentHolder);
         this.discipline = discipline;
     }
 

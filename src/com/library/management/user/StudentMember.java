@@ -1,20 +1,16 @@
 package com.library.management.user;
 
-import com.library.management.management.BorrowingManagement;
+import com.library.management.management.MemberRecord;
 
 public class StudentMember extends MemberRecord {
 
     public StudentMember(long memberId, String dateOfMembership,
                          int noBooksIssued, int maxBookLimit,
                          String memberName, String address,
-                         String phoneNumber, BorrowingManagement borrowingManagement) {
+                         String phoneNumber) {
         super(memberId, "Student", dateOfMembership, noBooksIssued,
-                maxBookLimit, memberName, address, phoneNumber, borrowingManagement);
+                maxBookLimit, memberName, address, phoneNumber);
     }
 
-    @Override
-    public boolean borrowBook(String title) {
-        //  öğrencilere özel bir indirim ya da gecikme ücreti muafiyeti olabilir.
-        return super.borrowBook(title);
-    }
+
 }

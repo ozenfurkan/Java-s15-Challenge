@@ -1,7 +1,6 @@
 package com.library.management.model;
 
-import com.library.management.management.Author;
-import com.library.management.user.MemberRecord;
+import com.library.management.management.MemberRecord;
 
 import java.time.LocalDate;
 
@@ -11,9 +10,9 @@ public class StudyBooks extends LibraryMaterials {
     private final String ISBN;
 
     public StudyBooks(Author author, String title, String status, double price, String edition,
-                      String publicationDate, LocalDate dateOfPurchase, MemberRecord owner,
+                      String publicationDate, LocalDate dateOfPurchase, MemberRecord CurrentHolder,
                       String subject, String ISBN) {
-        super(author, title, status, price, edition, publicationDate, dateOfPurchase, owner);
+        super(author, title, status, price, edition, publicationDate, dateOfPurchase, CurrentHolder);
         this.subject = subject;
         this.ISBN = ISBN;
     }

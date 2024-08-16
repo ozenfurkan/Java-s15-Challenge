@@ -1,134 +1,164 @@
 package com.library.management.management;
 
 import com.library.management.model.LibraryMaterials;
-import com.library.management.user.MemberRecord;
+import com.library.management.observer.LibraryObserver;
+import com.library.management.observer.LibrarySubject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Library implements LibraryData {
-    private final Map<String, List<LibraryMaterials>> materialsByTitle = new HashMap<>();
-    private final Map<String, List<LibraryMaterials>> borrowedMaterialsMap = new HashMap<>();
+public class Library implements LibraryObserver, LibrarySubject {
+    private final Map<String, List<LibraryMaterials>> allMaterialsMap;
+    private final Map<String, List<LibraryMaterials>> borrowedMaterialsMap;
+    private final Map<String, List<LibraryMaterials>> materialsByAuthor;
+    private final Map<Long, List<LibraryMaterials>> materialsByMember;  // Üyelere göre kitapların tutulduğu harita
+    private final List<LibraryObserver> observers;  // Gözlemcileri tutmak için liste
 
-
-
-    @Override
-    public void addMaterial(LibraryMaterials material) {
-        materialsByTitle.computeIfAbsent(material.getTitle(), (k) -> new ArrayList<>()).add(material);
+    public Library() {
+        this.allMaterialsMap = new HashMap<>();
+        this.borrowedMaterialsMap = new HashMap<>();
+        this.materialsByAuthor = new HashMap<>();
+        this.materialsByMember = new HashMap<>();
+        this.observers = new ArrayList<>();
     }
 
     @Override
-    public void onMaterialAdded(LibraryMaterials material) {
-        addMaterial(material);
+    public void registerObserver(LibraryObserver observer) {
+        observers.add(observer);
     }
 
     @Override
-    public boolean borrowMaterial(MemberRecord memberRecord, String title) {
-        List<LibraryMaterials> availableMaterials = materialsByTitle.getOrDefault(title, new ArrayList<>());
+    public void removeObserver(LibraryObserver observer) {
+        observers.remove(observer);
+    }
 
-        if (!availableMaterials.isEmpty()) {
-            LibraryMaterials material = availableMaterials.remove(0);
-            borrowedMaterialsMap.computeIfAbsent(title, k -> new ArrayList<>()).add(material);
-            material.setOwner(memberRecord);
-            material.setBorrowedDate(java.time.LocalDate.now());
-
-            System.out.println(memberRecord.getMemberName() + " borrowed: " + material.getTitle());
-            onMaterialBorrowed(material, memberRecord);
-            return true;
-        } else {
-            System.out.println("No materials available with the title: " + title);
-            return false;
+    @Override
+    public void notifyObservers(Map<String, List<LibraryMaterials>> allMaterials, Map<String, List<LibraryMaterials>> borrowedMaterials) {
+        for (LibraryObserver observer : observers) {
+            observer.onMaterialsUpdated(allMaterials, borrowedMaterials);
         }
     }
 
-    @Override
-    public void returnMaterial(MemberRecord memberRecord, String title) {
-        List<LibraryMaterials> borrowedMaterials = borrowedMaterialsMap.get(title);
-
-        if (borrowedMaterials == null || borrowedMaterials.isEmpty()) {
-            System.out.println("No borrowed material with this title to return.");
-            return;
-        }
-
-        LibraryMaterials materialToReturn = borrowedMaterials.remove(0);
-        materialsByTitle.computeIfAbsent(title, (k) -> new ArrayList<>()).add(materialToReturn);
-        materialToReturn.setOwner(null);
-        materialToReturn.setBorrowedDate(null);
-
-        System.out.println("Returned: " + materialToReturn.getTitle() + " by " + materialToReturn.getAuthor().getAuthorName());
-        onMaterialReturned(materialToReturn, memberRecord);
-
-        if (borrowedMaterials.isEmpty()) {
-            borrowedMaterialsMap.remove(title);
-        }
+    public Map<String, List<LibraryMaterials>> getAllMaterialsMap() {
+        return allMaterialsMap;
     }
 
-    @Override
-    public Map<String, List<LibraryMaterials>> getBorrowedMaterials() {
+    public Map<String, List<LibraryMaterials>> getBorrowedMaterialsMap() {
         return borrowedMaterialsMap;
     }
 
+    public Map<String, List<LibraryMaterials>> getMaterialsByAuthor() {
+        return materialsByAuthor;
+    }
+
+    public Map<Long, List<LibraryMaterials>> getMaterialsByMember() {
+        return materialsByMember;
+    }
+
+    public void displayAvailableBooks() {
+        System.out.println("Available Books:");
+        for (Map.Entry<String, List<LibraryMaterials>> entry : allMaterialsMap.entrySet()) {
+            for (LibraryMaterials material : entry.getValue()) {
+                System.out.println("  - " + material.getTitle() + " (by " + material.getAuthor() + ")");
+            }
+        }
+    }
+
+    public void displayBorrowedBooks() {
+        System.out.println("Borrowed Books:");
+        for (Map.Entry<String, List<LibraryMaterials>> entry : borrowedMaterialsMap.entrySet()) {
+            for (LibraryMaterials material : entry.getValue()) {
+                if (material.getCurrentHolder() != null) {
+                    System.out.println("  - " + material.getTitle() + " (by " + material.getAuthor() + "), borrowed by " + material.getCurrentHolder().getMemberName());
+                } else {
+                    System.out.println("  - " + material.getTitle() + " (by " + material.getAuthor() + "), not currently borrowed.");
+                }
+            }
+        }
+    }
+
+    public List<LibraryMaterials> getBooksBorrowedByMember(long memberId) {
+        return materialsByMember.getOrDefault(memberId, new ArrayList<>());
+    }
+
+    // Yazara göre kitapları arama
+    public List<LibraryMaterials> searchBooksByAuthor(String authorName) {
+        return materialsByAuthor.getOrDefault(authorName, new ArrayList<>());
+    }
+
+    // Üyeye göre ödünç alınan kitapları arama
+    public List<LibraryMaterials> searchBooksByMember(long memberId) {
+        return materialsByMember.getOrDefault(memberId, new ArrayList<>());
+    }
+
+    // LibraryObserver implementasyonları
     @Override
-    public void displayAllMaterials() {
-        if (materialsByTitle.isEmpty()) {
-            System.out.println("There isn't available materials");
+    public void onMaterialsUpdated(Map<String, List<LibraryMaterials>> allMaterials, Map<String, List<LibraryMaterials>> borrowedMaterials) {
+        this.allMaterialsMap.clear();
+        this.allMaterialsMap.putAll(allMaterials);
+
+        this.borrowedMaterialsMap.clear();
+        this.borrowedMaterialsMap.putAll(borrowedMaterials);
+
+        System.out.println("Library: All materials have been updated.");
+        notifyObservers(allMaterialsMap, borrowedMaterialsMap);  // Bildirim gönder
+    }
+
+    @Override
+    public void onBookBorrowed(String title, String currentHolder, LibraryMaterials material) {
+        borrowedMaterialsMap.computeIfAbsent(title, k -> new ArrayList<>()).add(material);
+        allMaterialsMap.getOrDefault(title, new ArrayList<>()).remove(material);
+
+        materialsByMember.computeIfAbsent(material.getCurrentHolder().getMemberId(), k -> new ArrayList<>()).add(material);
+
+        System.out.println("Library: The book '" + title + "' has been borrowed by " + currentHolder + ".");
+        notifyObservers(allMaterialsMap, borrowedMaterialsMap);  // Bildirim gönder
+    }
+
+    @Override
+    public void onBookReturned(String title, LibraryMaterials material) {
+        // currentHolder null olup olmadığını kontrol et
+        if (material.getCurrentHolder() != null) {
+            borrowedMaterialsMap.getOrDefault(title, new ArrayList<>()).remove(material);
+            allMaterialsMap.computeIfAbsent(title, k -> new ArrayList<>()).add(material);
+
+            List<LibraryMaterials> memberBooks = materialsByMember.get(material.getCurrentHolder().getMemberId());
+            if (memberBooks != null) {
+                memberBooks.remove(material);
+                if (memberBooks.isEmpty()) {
+                    materialsByMember.remove(material.getCurrentHolder().getMemberId());
+                }
+            }
+
+            System.out.println("Library: The book '" + title + "' has been returned and is now available.");
+            notifyObservers(allMaterialsMap, borrowedMaterialsMap);  // Bildirim gönder
         } else {
-            for (Map.Entry<String, List<LibraryMaterials>> entry : materialsByTitle.entrySet()) {
-                for (LibraryMaterials material : entry.getValue()) {
-                    System.out.println(material);
-                }
-            }
+            System.out.println("Error: The book does not have a current holder.");
         }
     }
 
     @Override
-    public void displayBorrowedMaterials() {
-        if (borrowedMaterialsMap.isEmpty()) {
-            System.out.println("There isn't borrowed materials");
-        } else {
-            for (Map.Entry<String, List<LibraryMaterials>> entry : borrowedMaterialsMap.entrySet()) {
-                for (LibraryMaterials material : entry.getValue()) {
-                    System.out.println(material);
-                }
-            }
-        }
-    }
-//bu bir interface'ten alınabilir.!!!!!!!!
-    public List<LibraryMaterials> searchMaterialsByAuthor(String authorName) {
-        List<LibraryMaterials> result = new ArrayList<>();
-        for (List<LibraryMaterials> materialsList : materialsByTitle.values()) {
-            for (LibraryMaterials material : materialsList) {
-                if (material.getAuthor().getAuthorName().equalsIgnoreCase(authorName)) {
-                    result.add(material);
-                }
-            }
-        }
-        return result;
-    }
+    public void onNewBookAdded(String authorName, String title, LibraryMaterials material) {
+        allMaterialsMap.computeIfAbsent(title, k -> new ArrayList<>()).add(material);
+        materialsByAuthor.computeIfAbsent(authorName, k -> new ArrayList<>()).add(material);
 
-    public List<LibraryMaterials> searchMaterialsByMember(String memberName) {
-        List<LibraryMaterials> result = new ArrayList<>();
-        for (List<LibraryMaterials> materialsList : borrowedMaterialsMap.values()) {
-            for (LibraryMaterials material : materialsList) {
-                if (material.getOwner() != null && material.getOwner().getMemberName().equalsIgnoreCase(memberName)) {
-                    result.add(material);
-                }
-            }
-        }
-        return result;
+        System.out.println("Library: A new book '" + title + "' by " + authorName + " has been added.");
+        notifyObservers(allMaterialsMap, borrowedMaterialsMap);  // Bildirim gönder
     }
 
     @Override
-    public void onMaterialBorrowed(LibraryMaterials material, MemberRecord member) {
-        System.out.println("Observer: " + member.getMemberName() + " borrowed the material: " + material.getTitle());
-        // Gözlemcinin ödünç alma ile ilgili yapacağı işlemler burada tanımlanabilir
-    }
+    public void onBookInfoUpdated(String title, String currentHolder, LibraryMaterials material) {
+        for (LibraryMaterials mat : allMaterialsMap.getOrDefault(title, new ArrayList<>())) {
+            if (mat.equals(material)) {
+                mat.setCurrentHolder(material.getCurrentHolder());
+                mat.setBorrowedDate(material.getBorrowedDate());
+                break;
+            }
+        }
 
-    @Override
-    public void onMaterialReturned(LibraryMaterials material, MemberRecord member) {
-        System.out.println("Observer: " + member.getMemberName() + " returned the material: " + material.getTitle());
-        // Gözlemcinin iade ile ilgili yapacağı işlemler burada tanımlanabilir
+        System.out.println("Library: The book '" + title + "' information has been updated.");
+        notifyObservers(allMaterialsMap, borrowedMaterialsMap);  // Bildirim gönder
     }
 }

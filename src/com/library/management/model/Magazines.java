@@ -1,8 +1,8 @@
 package com.library.management.model;
 
-import com.library.management.management.Author;
-import com.library.management.user.MemberRecord;
+import com.library.management.management.MemberRecord;
 
+import java.lang.reflect.Member;
 import java.time.LocalDate;
 
 public class Magazines extends LibraryMaterials {
@@ -10,8 +10,8 @@ public class Magazines extends LibraryMaterials {
 
     public Magazines(Author author, String title, String status, double price,
                      String edition, String publicationDate, LocalDate dateOfPurchase,
-                     MemberRecord owner, int issueNumber) {
-        super(author, title, status, price, edition, publicationDate, dateOfPurchase, owner);
+                     MemberRecord currentHolder, int issueNumber) {
+        super(author, title, status, price, edition, publicationDate, dateOfPurchase, currentHolder);
         this.issueNumber = issueNumber;
     }
 
