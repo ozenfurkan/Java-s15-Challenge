@@ -1,9 +1,13 @@
-package com.library.management.management;
+package com.library.management.user;
+
+import com.library.management.model.LibraryMaterials;
+
+import java.util.List;
+import java.util.Map;
 
 public interface MemberManagement {
     long getMemberId();
-    String getMemberType();
-    int getNoBooksIssued();
+     int getNoBooksIssued();
     int getMaxBookLimit();
     String getMemberName();
     String getDateOfMembership();
@@ -13,4 +17,5 @@ public interface MemberManagement {
     void incBooksIssued();
     void payBill();
     void setNoBooksIssued(int i);
+
 }

@@ -1,8 +1,7 @@
 package com.library.management.model;
 
-import com.library.management.management.MemberRecord;
+import com.library.management.user.MemberRecord;
 
-import java.lang.reflect.Member;
 import java.time.LocalDate;
 
 public class Magazines extends LibraryMaterials {

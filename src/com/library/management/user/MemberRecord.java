@@ -1,8 +1,14 @@
-package com.library.management.management;
+package com.library.management.user;
 
-public abstract class MemberRecord implements MemberManagement {
+import com.library.management.library.EventType;
+import com.library.management.model.LibraryMaterials;
+import com.library.management.observer.LibraryObserver;
+
+import java.util.List;
+import java.util.Map;
+
+public abstract class MemberRecord implements MemberManagement, LibraryObserver {
     private final long memberId;
-    private final String memberType;
     private final String dateOfMembership;
     private int noBooksIssued;
     private final int maxBookLimit;
@@ -10,11 +16,10 @@ public abstract class MemberRecord implements MemberManagement {
     private final String address;
     private final String phoneNumber;
 
-    public MemberRecord(long memberId, String memberType, String dateOfMembership,
+    public MemberRecord(long memberId,  String dateOfMembership,
                         int noBooksIssued, int maxBookLimit, String memberName,
                         String phoneNumber, String address) {
         this.memberId = memberId;
-        this.memberType = memberType;
         this.dateOfMembership = dateOfMembership;
         this.noBooksIssued = noBooksIssued;
         this.maxBookLimit = maxBookLimit;
@@ -28,10 +33,8 @@ public abstract class MemberRecord implements MemberManagement {
         return memberId;
     }
 
-    @Override
-    public String getMemberType() {
-        return memberType;
-    }
+
+
 
     @Override
     public int getNoBooksIssued() {
@@ -83,11 +86,38 @@ public abstract class MemberRecord implements MemberManagement {
 
     @Override
     public void payBill() {
-        // Borç ödeme işlemleri burada tanımlanabilir
     }
 
     @Override
     public void setNoBooksIssued(int noBooksIssued) {
         this.noBooksIssued = noBooksIssued;
     }
+
+
+    @Override
+    public void update(EventType eventType, LibraryMaterials material) {
+        if (material.getCurrentHolder() != null && material.getCurrentHolder().getMemberId() == this.memberId) {
+            switch (eventType) {
+                case LEND:
+                    System.out.println("Member " + memberName + ": You have borrowed the material titled '" + material.getTitle() + "'.");
+                    break;
+                case RETURN:
+                    System.out.println("Member " + memberName + ": You have returned the material titled '" + material.getTitle() + "'.");
+                    break;
+                default:
+                    System.out.println("Member " + memberName + ": An update occurred for the material titled '" + material.getTitle() + "'.");
+                    break;
+            }
+        }
+    }
+
+
+    @Override
+    public String whoYouAre() {
+        return "Member: " + getMemberName();
+    }
+
 }
+
+
+

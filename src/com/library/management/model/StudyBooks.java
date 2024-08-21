@@ -1,6 +1,6 @@
 package com.library.management.model;
 
-import com.library.management.management.MemberRecord;
+import com.library.management.user.MemberRecord;
 
 import java.time.LocalDate;
 
