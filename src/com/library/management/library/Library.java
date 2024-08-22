@@ -1,5 +1,6 @@
 package com.library.management.library;
 
+import com.library.management.model.Bill;
 import com.library.management.model.LibraryMaterials;
 import com.library.management.observer.LibraryObserver;
 import com.library.management.observer.LibrarySubject;
@@ -17,12 +18,14 @@ public class Library implements LibrarySubject {
     private final Map<Long, List<LibraryMaterials>> materialsByMember;
     private final List<LibraryObserver> observers;
     private final Map<Long, MemberRecord> memberMap;
+    private final Map<Long, Bill> billMap;
 
     public Library() {
         this.allMaterialsMap = new HashMap<>();
         this.borrowedMaterialsMap = new HashMap<>();
         this.materialsByAuthor = new HashMap<>();
         this.materialsByMember = new HashMap<>();
+        this.billMap = new HashMap<>();
         this.memberMap = new HashMap<>();
         this.observers = new ArrayList<>();
     }
@@ -37,10 +40,11 @@ public class Library implements LibrarySubject {
         observers.remove(observer);
     }
 
+
     @Override
-    public void notifyObservers(EventType eventType, LibraryMaterials material) {
+    public void notifyObservers(EventType eventType, LibraryMaterials material, Library library, DisplayOptions displayOptions) {
         for (LibraryObserver observer : observers) {
-            observer.update(eventType, material);
+            observer.update(eventType, material, library, displayOptions);
         }
     }
 
@@ -66,5 +70,9 @@ public class Library implements LibrarySubject {
 
     public List<LibraryObserver> getObservers() {
         return observers;
+    }
+
+    public Map<Long, Bill> getBillMap() {
+        return billMap;
     }
 }

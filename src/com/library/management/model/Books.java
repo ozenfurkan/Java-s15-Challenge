@@ -7,10 +7,9 @@ import java.time.LocalDate;
 public class Books extends LibraryMaterials {
     private String ISBN;
 
-    public Books(Author author, String title, String status,
-                 double price, String edition,
-                 String publicationDate, LocalDate dateOfPurchase, MemberRecord currentHolder, String ISBN) {
-        super(author, title, status, price, edition, publicationDate, dateOfPurchase, currentHolder);
+    public Books(String materialId, Author author, String title, double price, Status status,
+                 String edition, String publicationDate, LocalDate dateOfPurchase, String ISBN) {
+        super(materialId, author, title, price, status, edition, publicationDate, dateOfPurchase);
         this.ISBN = ISBN;
     }
 

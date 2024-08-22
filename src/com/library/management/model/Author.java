@@ -1,10 +1,11 @@
 package com.library.management.model;
 
-import com.library.management.library.EventType;
-import com.library.management.observer.LibraryObserver;
 
 
-public class Author implements LibraryObserver {
+import java.util.Objects;
+
+
+public class Author {
     private final String authorName;
 
     public Author(String authorName) {
@@ -16,27 +17,20 @@ public class Author implements LibraryObserver {
     }
 
     @Override
-    public void update(EventType eventType, LibraryMaterials material) {
-        if (material.getAuthor().equals(this.authorName)) {
-            switch (eventType) {
-                case ADD:
-                    System.out.println("Author: New material by " + authorName + " added: " + material.getTitle());
-                    break;
-                case LEND:
-                    System.out.println("Author: Material by " + authorName + " has been lent: " + material.getTitle());
-                    break;
-                case RETURN:
-                    System.out.println("Author: Material by " + authorName + " has been returned: " + material.getTitle());
-                    break;
-                default:
-                    System.out.println("Author: Unknown event type.");
-                    break;
-            }
-        }
+    public String toString() {
+        return "Author: " + authorName;
     }
 
     @Override
-    public String whoYouAre() {
-        return "Author: " + getAuthorName();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Author author = (Author) o;
+        return authorName.equals(author.authorName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(authorName);
     }
 }

@@ -1,16 +1,14 @@
 package com.library.management.model;
 
-import com.library.management.user.MemberRecord;
 
 import java.time.LocalDate;
 
 public class Magazines extends LibraryMaterials {
     private final int issueNumber;
 
-    public Magazines(Author author, String title, String status, double price,
-                     String edition, String publicationDate, LocalDate dateOfPurchase,
-                     MemberRecord currentHolder, int issueNumber) {
-        super(author, title, status, price, edition, publicationDate, dateOfPurchase, currentHolder);
+    public Magazines(String materialId, Author author, String title, double price,
+                     Status status, String edition, String publicationDate, LocalDate dateOfPurchase, int issueNumber) {
+        super(materialId, author, title, price, status, edition, publicationDate, dateOfPurchase);
         this.issueNumber = issueNumber;
     }
 

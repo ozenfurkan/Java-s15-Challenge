@@ -1,16 +1,14 @@
 package com.library.management.model;
 
-import com.library.management.user.MemberRecord;
 
 import java.time.LocalDate;
 
 public class Journals extends LibraryMaterials {
     private String discipline;
 
-    public Journals(Author author, String title, String status,
-                    double price, String edition, String publicationDate,
-                    LocalDate dateOfPurchase, MemberRecord currentHolder, String discipline) {
-        super(author, title, status, price, edition, publicationDate, dateOfPurchase, currentHolder);
+    public Journals(String materialId, Author author, String title, double price,
+                    Status status, String edition, String publicationDate, LocalDate dateOfPurchase, String discipline) {
+        super(materialId, author, title, price, status, edition, publicationDate, dateOfPurchase);
         this.discipline = discipline;
     }
 

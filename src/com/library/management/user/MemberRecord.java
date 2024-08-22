@@ -1,13 +1,8 @@
 package com.library.management.user;
 
-import com.library.management.library.EventType;
-import com.library.management.model.LibraryMaterials;
-import com.library.management.observer.LibraryObserver;
+import java.util.Objects;
 
-import java.util.List;
-import java.util.Map;
-
-public abstract class MemberRecord implements MemberManagement, LibraryObserver {
+public abstract class MemberRecord {
     private final long memberId;
     private final String dateOfMembership;
     private int noBooksIssued;
@@ -16,9 +11,7 @@ public abstract class MemberRecord implements MemberManagement, LibraryObserver 
     private final String address;
     private final String phoneNumber;
 
-    public MemberRecord(long memberId,  String dateOfMembership,
-                        int noBooksIssued, int maxBookLimit, String memberName,
-                        String phoneNumber, String address) {
+    public MemberRecord(long memberId, String dateOfMembership, int noBooksIssued, int maxBookLimit, String memberName, String phoneNumber, String address) {
         this.memberId = memberId;
         this.dateOfMembership = dateOfMembership;
         this.noBooksIssued = noBooksIssued;
@@ -28,95 +21,59 @@ public abstract class MemberRecord implements MemberManagement, LibraryObserver 
         this.address = address;
     }
 
-    @Override
     public long getMemberId() {
         return memberId;
     }
 
-
-
-
-    @Override
     public int getNoBooksIssued() {
         return noBooksIssued;
     }
 
-    @Override
-    public String getDateOfMembership() {
-        return dateOfMembership;
+    public void setNoBooksIssued(int noBooksIssued) {
+        this.noBooksIssued = noBooksIssued;
     }
 
-    @Override
     public int getMaxBookLimit() {
         return maxBookLimit;
     }
 
-    @Override
     public String getMemberName() {
         return memberName;
     }
 
-    @Override
+    public String getDateOfMembership() {
+        return dateOfMembership;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
     public String getAddress() {
         return address;
     }
 
     @Override
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String toString() {
+        return "MemberRecord{" +
+                "memberId=" + memberId +
+                ", memberName='" + memberName + '\'' +
+                ", dateOfMembership='" + dateOfMembership + '\'' +
+                '}';
     }
 
     @Override
-    public void decBooksIssued() {
-        if (noBooksIssued > 0) {
-            noBooksIssued--;
-        } else {
-            System.out.println("No books issued to decrease.");
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MemberRecord that = (MemberRecord) o;
+        return memberId == that.memberId;
     }
 
     @Override
-    public void incBooksIssued() {
-        if (noBooksIssued < maxBookLimit) {
-            noBooksIssued++;
-        } else {
-            System.out.println("Max issuing limit has been reached, member cannot borrow more materials.");
-        }
+    public int hashCode() {
+        return Objects.hash(memberId);
     }
-
-    @Override
-    public void payBill() {
-    }
-
-    @Override
-    public void setNoBooksIssued(int noBooksIssued) {
-        this.noBooksIssued = noBooksIssued;
-    }
-
-
-    @Override
-    public void update(EventType eventType, LibraryMaterials material) {
-        if (material.getCurrentHolder() != null && material.getCurrentHolder().getMemberId() == this.memberId) {
-            switch (eventType) {
-                case LEND:
-                    System.out.println("Member " + memberName + ": You have borrowed the material titled '" + material.getTitle() + "'.");
-                    break;
-                case RETURN:
-                    System.out.println("Member " + memberName + ": You have returned the material titled '" + material.getTitle() + "'.");
-                    break;
-                default:
-                    System.out.println("Member " + memberName + ": An update occurred for the material titled '" + material.getTitle() + "'.");
-                    break;
-            }
-        }
-    }
-
-
-    @Override
-    public String whoYouAre() {
-        return "Member: " + getMemberName();
-    }
-
 }
 
 
